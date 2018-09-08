@@ -1,0 +1,4 @@
+﻿CREATE TABLE [dbo].[AspNetUsers]
+(
+	[Id] INT NOT NULL PRIMARY KEY
+)

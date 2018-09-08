@@ -29,7 +29,7 @@ namespace IdentityServer4Example.Api
             {
                 options.UseSqlServer(connectionString);
             });
-
+            services.AddDistributedMemoryCache();
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<IdServer4ExampleDbContext>()
             .AddDefaultTokenProviders();
@@ -54,14 +54,15 @@ namespace IdentityServer4Example.Api
                 options.EnableTokenCleanup = true;
                 options.TokenCleanupInterval = 30;
             })
-            .AddAspNetIdentity<ApplicationUser>()
-            .AddProfileService<ProfileService>();
+            .AddInMemoryIdentityResources(Config.GetIdentityResources())
+            .AddInMemoryApiResources(Config.GetApiResources())
+            .AddAspNetIdentity<ApplicationUser>();
 
             services.AddCors(options =>
             {
                 options.AddPolicy("corspolicy", policy =>
                 {
-                    policy.WithOrigins("http://localhost:57770")
+                    policy.WithOrigins("http://localhost:49717")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -74,6 +75,9 @@ namespace IdentityServer4Example.Api
                 options.Authority = "http://localhost:57770";
                 options.RequireHttpsMetadata = false;
                 options.ApiName = "exampleapi";
+                options.ApiSecret = "secret";
+                options.EnableCaching = true;
+                options.CacheDuration = TimeSpan.FromMinutes(10);
             });
 
             services.AddAuthorization(c =>

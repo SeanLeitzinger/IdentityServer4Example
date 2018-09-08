@@ -1,0 +1,33 @@
+﻿.vertical-center {
+    min-height: 100%; /* Fallback for browsers do NOT support vh unit */
+    min-height: 100vh; /* These two lines are counted as one :-)       */
+    display: flex;
+    align-items: center;
+}
+
+.align-with-header {
+    min-height: 100%; /* Fallback for browsers do NOT support vh unit */
+    min-height: 80vh; /* These two lines are counted as one :-)       */
+    display: flex;
+    align-items: center;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    min-height: 82px;
+    background-color: #3e464c;
+    padding: 15px;
+
+    .row {
+        margin: 0;
+        color: #ffffff;
+        opacity: .75;
+    }
+
+    a, a:hover {
+        color: #ffffff;
+        opacity: .75;
+    }
+}

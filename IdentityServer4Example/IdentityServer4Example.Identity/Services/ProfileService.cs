@@ -1,14 +1,14 @@
 ﻿using IdentityServer4.Models;
 using IdentityServer4.Services;
-using IdentityServer4Example.Api.Data;
-using IdentityServer4Example.Api.Models;
+using IdentityServer4Example.Core.Models;
+using IdentityServer4Example.Data;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace IdentityServer4Example.Api
+namespace IdentityServer4Example.Identity
 {
     public class ProfileService : IProfileService
     {
