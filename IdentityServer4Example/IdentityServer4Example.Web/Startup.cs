@@ -24,6 +24,8 @@ namespace IdentityServer4Example.Web
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddMvc(options => options.Filters.Add(new RequireHttpsAttribute()));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Reflection;
 
 namespace IdentityServer4Example.Api
 {
@@ -30,39 +29,35 @@ namespace IdentityServer4Example.Api
                 options.UseSqlServer(connectionString);
             });
             services.AddDistributedMemoryCache();
-            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
+
+            var lockoutOptions = new LockoutOptions()
+            {
+                AllowedForNewUsers = true,
+                DefaultLockoutTimeSpan = TimeSpan.FromDays(99999),
+                MaxFailedAccessAttempts = 5
+            };
+
+            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(option =>
+            {
+                option.Lockout = lockoutOptions;
+                option.User = new UserOptions { RequireUniqueEmail = true };
+                option.Password.RequireDigit = false;
+                option.Password.RequiredLength = 12;
+                option.Password.RequiredUniqueChars = 0;
+                option.Password.RequireLowercase = false;
+                option.Password.RequireNonAlphanumeric = false;
+                option.Password.RequireUppercase = false;
+            })
             .AddEntityFrameworkStores<IdServer4ExampleDbContext>()
             .AddDefaultTokenProviders();
 
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.AddIdentityServer()
-            .AddDeveloperSigningCredential()
-            .AddConfigurationStore(options =>
-            {
-                options.ConfigureDbContext = builder =>
-                    builder.UseSqlServer(connectionString,
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
-            })
-            .AddOperationalStore(options =>
-            {
-                options.ConfigureDbContext = builder =>
-                    builder.UseSqlServer(connectionString,
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
-                options.EnableTokenCleanup = true;
-                options.TokenCleanupInterval = 30;
-            })
-            .AddInMemoryIdentityResources(Config.GetIdentityResources())
-            .AddInMemoryApiResources(Config.GetApiResources())
-            .AddAspNetIdentity<ApplicationUser>();
 
             services.AddCors(options =>
             {
                 options.AddPolicy("corspolicy", policy =>
                 {
-                    policy.WithOrigins("http://localhost:49717")
+                    policy.WithOrigins("https://localhost:44322")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -72,13 +67,12 @@ namespace IdentityServer4Example.Api
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddIdentityServerAuthentication(options =>
             {
-                options.Authority = "http://localhost:57770";
+                options.Authority = "https://localhost:44386";
                 options.RequireHttpsMetadata = false;
                 options.ApiName = "exampleapi";
-                options.ApiSecret = "secret";
-                options.EnableCaching = true;
-                options.CacheDuration = TimeSpan.FromMinutes(10);
             });
+
+            services.AddMvc(options => options.Filters.Add(new RequireHttpsAttribute()));
 
             services.AddAuthorization(c =>
             {
@@ -102,7 +96,6 @@ namespace IdentityServer4Example.Api
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseCookiePolicy();
-            app.UseIdentityServer();
             app.UseMvc();
         }
     }

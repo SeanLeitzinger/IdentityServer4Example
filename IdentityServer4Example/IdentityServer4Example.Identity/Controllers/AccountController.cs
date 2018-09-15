@@ -26,6 +26,9 @@ namespace IdentityServer4Example.Identity.Controllers
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
+            if (returnUrl == null)
+                returnUrl = "https://localhost:44322/";
+
             if (HttpContext.User.Identity.IsAuthenticated)
                 return Redirect(returnUrl);
 
@@ -94,10 +97,8 @@ namespace IdentityServer4Example.Identity.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
@@ -114,6 +115,23 @@ namespace IdentityServer4Example.Identity.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Logout()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout(bool logOut = true)
+        {
+            await signInManager.SignOutAsync();
+
+            return View("Login");
         }
 
         private void AddErrors(IdentityResult result)

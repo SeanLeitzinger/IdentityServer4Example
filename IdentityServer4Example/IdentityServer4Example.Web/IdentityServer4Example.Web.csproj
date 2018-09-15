@@ -24,8 +24,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\app\apiservices\user.apiservice.ts" />
+    <None Remove="ClientApp\src\app\models\application-user.ts" />
+    <None Remove="ClientApp\src\app\services\auth.ts" />
+    <None Remove="ClientApp\src\app\services\authentication-check.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\IdentityServer4Example.Core\IdentityServer4Example.Core.csproj" />
     <ProjectReference Include="..\IdentityServer4Example.Data\IdentityServer4Example.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\apiservices\user.apiservice.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\models\application-user.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\services\auth.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\services\authentication-check.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

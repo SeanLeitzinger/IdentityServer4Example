@@ -1,45 +1,37 @@
 ﻿using IdentityServer4Example.Api.Models;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace IdentityServer4Example.Api.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
-        UserManager<ApplicationUser> userManager;
-        SignInManager<ApplicationUser> signInManager;
-
-        public UserController(UserManager<ApplicationUser> userManager)
+        [Authorize]
+        [HttpGet("GetUsers")]
+        public IActionResult GetUsers()
         {
-            this.userManager = userManager;
+            return new OkObjectResult(new List<ApplicationUser>
+            {
+                new ApplicationUser
+                {
+                    FirstName = "Mike",
+                    LastName = "Stanford"
+                },
+                new ApplicationUser
+                {
+                    FirstName = "Jennfier",
+                    LastName = "Smith"
+                },
+                new ApplicationUser
+                {
+                    FirstName = "John",
+                    LastName = "Angel"
+                }
+            });
         }
-
-        public async Task<IActionResult> Register(ApplicationUser user, string password)
-        {
-            var result = await userManager.CreateAsync(user, password);
-
-            if (result.Succeeded)
-                return new OkObjectResult(user);
-
-            return new BadRequestObjectResult(result.Errors.Select(m => m.Description).ToList());
-        }
-
-        //public async Task<IActionResult> SignIn(string email, string password, bool isPersistent)
-        //{
-        //    var user = await userManager.FindByNameAsync(email);
-
-        //    if (user == null)
-        //        return new BadRequestObjectResult("User not found.");
-
-        //    if (user.LockoutEnd != null)
-        //        return new BadRequestObjectResult("Account locked.");
-
-        //    var result = await signInManager.PasswordSignInAsync(user, password, isPersistent, lockoutOnFailure: true);
-
-        //    if(result.Succeeded)
-
-        //}
     }
 }
