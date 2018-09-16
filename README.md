@@ -1,2 +1,2 @@
 # IdentityServer4Example
-IdentityServer4 example hosted in ASP.NET Core Web API
+IdentityServer4 example hosted with an Angular web application and an ASP.NET Core Web API.
